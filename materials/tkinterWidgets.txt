@@ -1,0 +1,4 @@
+canvas = Canvas(window, height=250, width=500)
+
+canvas.place(relx=0, rely=0.5)
+
