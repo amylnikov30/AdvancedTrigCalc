@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 import math
+import cmd
 
 
 #class CalculatorUI:
@@ -17,6 +18,8 @@ canvas.pack()
 canvas.place(relx = 0, rely = 0.5)
 sideLabels = [Label]
 angleLabels = [Label]
+
+#console = cmd.Console(window, canvas)
 
 
 alab = Label(window, text="Side a: ", bg=color)
@@ -53,6 +56,8 @@ cAns = Label(window)
 AAns = Label(window)
 BAns = Label(window)
 CAns = Label(window)
+
+status = Label(window)
 
 
 aEnt = Entry(window, width=10)
@@ -99,13 +104,73 @@ style.configure("TButton", foreground = "black")
     calc = calculator.Calculator(a=a, b=b, c=c, A=A, B=B, C=C)'''
 
 '''def findLongest(a, b, c):
-    
+
     ls = [a, b, c]
 
     ls.sort()
 
     return(ls[-1])'''
 
+
+def drawTriangleLabels(a, b, c, A, B, C):
+
+    # ls = sides[0]
+    # ss = sides[2]
+    #
+    # la = angles[0]
+    # ls = angles[]
+
+    sides = [a, b, c]
+    angles = [A, B, C]
+
+    sides.sort()
+    angles.sort()
+
+
+    ls = max(sides)
+    ss = min(sides)
+
+    la = max(angles)
+    sa = min(angles)
+
+    ssLoc = (0, 0)
+    osLoc = (0, 0)
+    saLoc = (0, 0)
+    oaLoc = (0, 0)
+
+    yCoor = 300 * (ss/ls)* math.sin(math.radians(angles[1]))
+    xCoor = 300 * (ss/ls) * math.cos(math.radians(angles[1]))
+
+    if math.sqrt((100 - xCoor)**2 + (200 - yCoor)**2) > math.sqrt((400 - xCoor)**2 + (200 - yCoor)**2):
+        ssLoc = (400, (yCoor/2))
+        osLoc = (100, (yCoor)/2)
+        saLoc = (145, 185)
+        oaLoc = (345, 185)
+    else:
+        ssLoc = (100, (yCoor)/2)
+        osLoc = (400, (yCoor)/2)
+        saLoc = (345, 185)
+        oaLoc = (145, 185)
+
+    print("Small Side Location: ", ssLoc)
+
+
+    #sides
+
+    lsLabel = canvas.create_text(200, 225, text=str(ls), fill="grey")
+
+    ssLabel = canvas.create_text(ssLoc[0], 200 - ssLoc[1], text=str(ss), fill="grey")
+
+    osLabel = canvas.create_text(osLoc[0], 200 - osLoc[1], text=str(sides[1]), fill="grey")
+
+
+    #angles
+
+    laLabel = canvas.create_text(100 + xCoor, 200 - yCoor + 35, text=str(round(la, ndigits=4)), fill="grey")
+
+    saLabel = canvas.create_text(saLoc[0], saLoc[1], text=str(round(sa, ndigits=4)), fill="grey")
+
+    oaLabel = canvas.create_text(oaLoc[0], saLoc[1], text=str(round(angles[1], ndigits=4)), fill="grey")
 
 
 def drawTriangle(a, b, c, A, B, C):
@@ -120,13 +185,17 @@ def drawTriangle(a, b, c, A, B, C):
     xCoor = 300 * (ss/ls) * math.cos(math.radians(angles[1]))
 
 
+
     triangle = canvas.create_line(100, 200, 400, 200, xCoor+100, 200 - yCoor, 100, 200, width = 3, fill="grey")
 
     print("xCoor: " + str(xCoor))
     print("yCoor: " + str(yCoor))
     print(angles)
+
+    #return {"angles" : angles, "sides" : sides.sort()}
     #triangle = canvas.create_line()
-    
+    #return (xCoor, yCoor)
+
 
 '''def draw(a, b, c):
     # determine corner points of triangle with sides a, b, c
@@ -182,16 +251,23 @@ def calculate(event=None):
     angles = [A, B, C]
     calc = calculator.Calculator(a=a, b=b, c=c, A=A, B=B, C=C)
 
-    calc.main()
+    try:
+        calc.main()
+    except:
+        messagebox.showerror("Error", "This triangle is not possible")
+        print("Errored out")
+        #clearAll(event=None)
 
 
-    global aAns 
-    global bAns 
-    global cAns 
-    global AAns 
-    global BAns 
+    global aAns
+    global bAns
+    global cAns
+    global AAns
+    global BAns
     global CAns
-    
+
+    global status
+
     aAns.config(text=calc.a, bg=color, foreground="white")
     bAns.config(text=calc.b, bg=color, foreground="white")
     cAns.config(text=calc.c, bg=color, foreground="white")
@@ -212,17 +288,19 @@ def calculate(event=None):
 
     #draw(calc.a, calc.b, calc.c)
     drawTriangle(calc.a, calc.b, calc.c, calc.A, calc.B, calc.C)
+    drawTriangleLabels(calc.a, calc.b, calc.c, calc.A, calc.B, calc.C)
 
-    status = Label(window, bg=color, foreground="green")
+    #status = Label(window, bg=color, foreground="green")
     status.grid(row=7, column=4)
 
+
     if calc.enoughInfo == True:
-        status.config(text="Successfully Calculated")
+        status.config(bg=color, foreground="green", text="Successfully Calculated")
     else:
         messagebox.showerror("Error", "Not enough information provided to calculate.\nPlease check all fields.")
-    
- 
-    
+        clearAll()
+
+
 
 
     '''for i in range(len(calc.sides)):
@@ -246,6 +324,8 @@ def clearLabels(event=None):
     AAns.config(text="")
     BAns.config(text="")
     CAns.config(text="")
+    status.config(text="")
+
 
 
 def clearEntries(event=None):
@@ -261,7 +341,7 @@ def clearAll(event=None):
     clearLabels()
     clearEntries()
     canvas.delete("all")
-    
+
 
 
 
@@ -278,7 +358,9 @@ for i in range(len(calc.angles)):
 
 window.bind("<Return>", calculate)
 window.bind("<Control-w>", clearAll)
-    
+#console.console.bind("<Return>", console)
+
+
 calcBtn = ttk.Button(window, text="Calculate", command=calculate)
 calcBtn.grid(row=6, column=4)
 
@@ -291,6 +373,13 @@ clearBtn.grid(row=6, column=5)
 
 #Trig command line
 #----------------------------------------------------------------
+
+
+'''def console(event=None):
+
+    global console
+
+    console.run()'''
 
 
 '''cmdEntry = Entry(window, width=300)

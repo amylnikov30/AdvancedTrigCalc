@@ -1,7 +1,7 @@
 import math
 
 class Calculator:
-    
+
     a = float
     b = float
     c = float
@@ -13,7 +13,7 @@ class Calculator:
     angles = []
 
     enoughInfo = bool
-    
+
     def __init__(self, a=0.0, b=0.0, c=0.0, A=0.0, B=0.0, C=0.0):
         self.a = a
         self.b = b
@@ -26,7 +26,7 @@ class Calculator:
         self.angles = [self.A, self.B, self.C]
 
         self.enoughInfo = False
-    
+
 
     def __call__(self, a=0.0, b=0.0, c=0.0, A=0.0, B=0.0, C=0.0):
         self.a = a
@@ -37,7 +37,7 @@ class Calculator:
         self.C = C
 
         self.sides = [self.a, self.b, self.c]
-        self.angles = [self.A, self.B, self.C]        
+        self.angles = [self.A, self.B, self.C]
 
 
     def completeAngles(self, angle1: float, angle2: float) -> float:
@@ -59,11 +59,11 @@ class Calculator:
         self.C = self.angles[2]
 
 
-    def finalCheck(self):
-        
-        if sum(self.angles) < 180:
-            self.angles[self.angles.index(max(self.angles))] = 180 - max(self.angles)
-        
+    # def finalCheck(self):
+    #
+    #     if sum(self.angles) < 180:
+    #         self.angles[self.angles.index(max(self.angles))] = 180 - max(self.angles)
+
 
 
 
@@ -72,9 +72,26 @@ class Calculator:
         numerator = self.a**2 + self.b**2 - self.c**2
         denominator = 2*self.a*self.b
 
+        print("revCosLaw::numerator: ", numerator)
+        print("revCosLaw::denominator: ", denominator)
+
         self.C = math.degrees(math.acos(numerator/denominator))
 
-        
+        # --------------------------------------------------
+
+        numerator = self.a**2 + self.c**2 - self.b**2
+        denominator = 2*self.a*self.c
+
+        self.B = math.degrees(math.acos(numerator/denominator))
+
+
+        # ----------------------------------------------------
+
+        numerator = self.b**2 + self.c**2 - self.a**2
+        denominator = 2*self.b*self.c
+
+        self.A = math.degrees(math.acos(numerator/denominator))
+
 
         self.updateLists()
 
@@ -95,8 +112,8 @@ class Calculator:
 
         for i in range(len(self.sides)):
             if not self.sides[i] or self.sides[i] == 0:
-                self.sides[i] = finalSide        
-            
+                self.sides[i] = finalSide
+
 
 
 
@@ -135,14 +152,14 @@ class Calculator:
             #initialAngle = 0.0
             #secondAngle = 0.0
             ratio = 0
-        
+
             #finding ratio
             for i in range(len(self.sides)):
                 if self.sides[i] and self.angles[i]:
                     ratio = self.sides[i] / math.sin(math.radians(self.angles[i]))
                     break
-        
-            
+
+
         #finding second angle and appending to exAngles
             for i in range(len(self.sides)):
                 if self.sides[i] and not self.angles[i]:
@@ -174,7 +191,7 @@ class Calculator:
                     self.angles[i] = self.completeAngles(exAngles[0], exAngles[1])
                     exAngles.append(self.completeAngles(exAngles[0], exAngles[1]))
 
-        
+
             #finding ratio
             for i in range(len(self.sides)):
                 if self.sides[i]:
@@ -189,6 +206,12 @@ class Calculator:
             self.updateVars()
 
 
+    def finalCheck(self):
+        pass
+
+
+
+
 
     def main(self):
 
@@ -196,8 +219,8 @@ class Calculator:
         existingAngles = self.existingElems(self.angles)
         if len(existingSides) >= 3:
             self.revCosLaw()
-            self.sinLaw()
-            self.finalCheck()
+            # self.sinLaw()
+            # self.finalCheck()
             self.enoughInfo = True
         elif len(existingSides) >= 2 and len(existingAngles) >= 1:
             if self.isBetween():
@@ -215,36 +238,3 @@ class Calculator:
 
         else:
             self.enoughInfo = False
-
-        
-        
-            
-        
-                
-        
-        
-        
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        
-    
