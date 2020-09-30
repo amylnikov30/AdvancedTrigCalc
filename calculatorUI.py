@@ -10,6 +10,7 @@ import cmd
 #class CalculatorUI:
 window = Tk()
 window.title("TrigCalc")
+#window.iconbitmap('icon.ico')
 window.geometry("500x500")
 color = "#002240"
 window.configure(bg=color)
@@ -18,6 +19,11 @@ canvas.pack()
 canvas.place(relx = 0, rely = 0.5)
 sideLabels = [Label]
 angleLabels = [Label]
+
+prevSides = []
+prevAngles = []
+
+
 
 #console = cmd.Console(window, canvas)
 
@@ -152,7 +158,7 @@ def drawTriangleLabels(a, b, c, A, B, C):
         saLoc = (345, 185)
         oaLoc = (145, 185)
 
-    print("Small Side Location: ", ssLoc)
+    #print("Small Side Location: ", ssLoc)
 
 
     #sides
@@ -188,9 +194,9 @@ def drawTriangle(a, b, c, A, B, C):
 
     triangle = canvas.create_line(100, 200, 400, 200, xCoor+100, 200 - yCoor, 100, 200, width = 3, fill="grey")
 
-    print("xCoor: " + str(xCoor))
-    print("yCoor: " + str(yCoor))
-    print(angles)
+    # print("xCoor: " + str(xCoor))
+    # print("yCoor: " + str(yCoor))
+    # print(angles)
 
     #return {"angles" : angles, "sides" : sides.sort()}
     #triangle = canvas.create_line()
@@ -217,33 +223,82 @@ def drawTriangle(a, b, c, A, B, C):
     #root.mainloop()
 '''
 
+def doPreviousEntry(event=None):
+    a = prevSides[0]
+    b = prevSides[1]
+    c = prevSides[2]
+
+    A = prevAngles[0]
+    B = prevAngles[1]
+    C = prevAngles[2]
+
+    calc = calculator.Calculator(a, b, c, A, B, C);
+
+
+    try:
+        calc.main()
+    except:
+        messagebox.showerror("Error", "This triangle is not possible")
+
+    global aAns
+    global bAns
+    global cAns
+    global AAns
+    global BAns
+    global CAns
+
+    global status
+
+    aAns.config(text=calc.a, bg=color, foreground="white")
+    bAns.config(text=calc.b, bg=color, foreground="white")
+    cAns.config(text=calc.c, bg=color, foreground="white")
+    AAns.config(text=calc.A, bg=color, foreground="white")
+    BAns.config(text=calc.B, bg=color, foreground="white")
+    CAns.config(text=calc.C, bg=color, foreground="white")
+
+
+
+
+
+    aAns.grid(row=0, column=5)
+    bAns.grid(row=1, column=5)
+    cAns.grid(row=2, column=5)
+    AAns.grid(row=3, column=5)
+    BAns.grid(row=4, column=5)
+    CAns.grid(row=5, column=5)
+
+    #draw(calc.a, calc.b, calc.c)
+    drawTriangle(calc.a, calc.b, calc.c, calc.A, calc.B, calc.C)
+    drawTriangleLabels(calc.a, calc.b, calc.c, calc.A, calc.B, calc.C)
+
+
 #@classmethod
 def calculate(event=None):
 
     clearLabels()
     canvas.delete("all")
 
-    if aEnt.get().isnumeric() and aEnt.get() != 0:
+    if aEnt.get() != 0 and aEnt.get() != "":
         a = float(aEnt.get())
     else:
         a = 0
-    if bEnt.get().isnumeric() and bEnt.get() != 0:
+    if bEnt.get() != 0 and bEnt.get() != "":
         b = float(bEnt.get())
     else:
         b = 0
-    if cEnt.get().isnumeric() and cEnt.get() != 0:
+    if cEnt.get() != 0 and cEnt.get() != "":
         c = float(cEnt.get())
     else:
         c = 0
-    if AEnt.get().isnumeric() and AEnt.get() != 0:
+    if AEnt.get() != 0 and AEnt.get() != "":
         A = float(AEnt.get())
     else:
         A = 0
-    if BEnt.get().isnumeric() and BEnt.get() != 0:
+    if BEnt.get() != 0 and BEnt.get() != "":
         B = float(BEnt.get())
     else:
         B = 0
-    if CEnt.get().isnumeric() and CEnt.get() != 0:
+    if CEnt.get() != 0 and CEnt.get() != "":
         C = float(CEnt.get())
     else:
         C = 0
@@ -251,11 +306,19 @@ def calculate(event=None):
     angles = [A, B, C]
     calc = calculator.Calculator(a=a, b=b, c=c, A=A, B=B, C=C)
 
+    prevSides.append(a)
+    prevSides.append(b)
+    prevSides.append(c)
+
+    prevAngles.append(A)
+    prevAngles.append(B)
+    prevAngles.append(C)
+
     try:
         calc.main()
     except:
         messagebox.showerror("Error", "This triangle is not possible")
-        print("Errored out")
+        #print("Errored out")
         #clearAll(event=None)
 
 
@@ -358,6 +421,7 @@ for i in range(len(calc.angles)):
 
 window.bind("<Return>", calculate)
 window.bind("<Control-w>", clearAll)
+window.bind("<Control-r>", doPreviousEntry)
 #console.console.bind("<Return>", console)
 
 
@@ -366,6 +430,9 @@ calcBtn.grid(row=6, column=4)
 
 clearBtn = ttk.Button(window, text = "Clear", command=clearAll)
 clearBtn.grid(row=6, column=5)
+
+calcPrevBtn = ttk.Button(window, text = "Calculate Previous", command=doPreviousEntry)
+calcPrevBtn.grid(row=6, column=6)
 
 
 

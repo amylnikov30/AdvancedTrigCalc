@@ -40,6 +40,8 @@ class Calculator:
         self.angles = [self.A, self.B, self.C]
 
 
+
+
     def completeAngles(self, angle1: float, angle2: float) -> float:
         angle3 = 180 - (angle1 + angle2)
 
@@ -72,8 +74,8 @@ class Calculator:
         numerator = self.a**2 + self.b**2 - self.c**2
         denominator = 2*self.a*self.b
 
-        print("revCosLaw::numerator: ", numerator)
-        print("revCosLaw::denominator: ", denominator)
+        # print("revCosLaw::numerator: ", numerator)
+        # print("revCosLaw::denominator: ", denominator)
 
         self.C = math.degrees(math.acos(numerator/denominator))
 

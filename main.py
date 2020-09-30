@@ -7,4 +7,6 @@ def _quit(event=None):
 window.bind("<Control-q>", _quit)
 window.bind("<Escape>", _quit)
 
+#window.iconbitmap('icon.ico')
+
 window.mainloop()
