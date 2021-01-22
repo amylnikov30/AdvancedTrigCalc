@@ -232,6 +232,8 @@ def doPreviousEntry(event=None):
     B = prevAngles[1]
     C = prevAngles[2]
 
+    canvas.delete("all")
+
     calc = calculator.Calculator(a, b, c, A, B, C);
 
 
@@ -420,7 +422,7 @@ for i in range(len(calc.angles)):
 
 
 window.bind("<Return>", calculate)
-window.bind("<Control-w>", clearAll)
+window.bind("<Control-BackSpace>", clearAll)
 window.bind("<Control-r>", doPreviousEntry)
 #console.console.bind("<Return>", console)
 
