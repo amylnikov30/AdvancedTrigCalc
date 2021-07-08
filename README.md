@@ -5,5 +5,4 @@ This calculator completes the triangle when given 3 pieces of information with w
 
 Current known issues:
 >   -Does not solve for area <br />
->   -Ambigious case not solved <br />
 >   -Window appearing blurry when Windows zoom is not 100% <br /> 
